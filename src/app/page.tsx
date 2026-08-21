@@ -1,7 +1,19 @@
-export default function Home() {
-  return (
-    <main className="flex flex-1 flex-col items-center justify-center p-8">
-      <h1 className="text-2xl font-semibold tracking-tight">App</h1>
-    </main>
-  );
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { FullScreenLoader } from "@/components/shared/FullScreenLoader";
+import { useAuth } from "@/providers/AuthProvider";
+
+// The session lives in localStorage, so the entry point can only be resolved on the client.
+export default function EntryPage() {
+  const { status } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "loading") return;
+    router.replace(status === "authenticated" ? "/chat" : "/login");
+  }, [status, router]);
+
+  return <FullScreenLoader />;
 }
