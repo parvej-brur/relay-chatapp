@@ -11,6 +11,18 @@ npm run dev
 
 Open http://localhost:3000.
 
+## API documentation
+
+The API this app is built against is documented in [`docs/API_Documentation.md`](docs/API_Documentation.md) — written first, before any feature code, as the standalone Part 1 deliverable.
+
+It covers authentication, user search, direct and group conversations, message send/history, error shapes, and the Socket.io real-time contract, plus an end-to-end example flow.
+
+| | |
+| --------------- | --------------------------------------------------- |
+| REST base URL   | `https://frontend-task-chatapp.onrender.com/api`     |
+| Socket.io URL   | `https://frontend-task-chatapp.onrender.com` (root)  |
+| Auth            | `Authorization: Bearer <token>` on every route except `/auth/login` and `/health` |
+
 ## Scripts
 
 | Script              | Description                  |
@@ -41,6 +53,7 @@ tests/           Mirrors src/
 ```
 
 Project name and public-facing details live in [`src/config/site.ts`](src/config/site.ts).
-See [AGENTS.md](AGENTS.md) for the full architecture blueprint and naming rules.
+
+A feature owns its own `api/`, `components/`, `hooks/`, `schemas/`, `store/` and `utils/`, and exposes a single public surface through its `index.ts`. Features never import each other — shared code is promoted to `components/` or `lib/`, and the boundary is enforced by ESLint rather than convention.
 
 Imports resolve through the single `@/*` alias, e.g. `import { SITE } from "@/config/site"`.

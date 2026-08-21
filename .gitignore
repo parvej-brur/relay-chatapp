@@ -40,8 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# docs / markdown (README kept)
+# docs / markdown (README and the API documentation deliverable are kept)
 *.md
 !README.md
+!docs/API_Documentation.md
 *.docs
 .docs/
