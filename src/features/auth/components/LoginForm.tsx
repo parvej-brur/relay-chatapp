@@ -4,8 +4,8 @@ import { type FormEvent, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { TextField } from "@/components/ui/TextField";
 import { ErrorState } from "@/components/shared/ErrorState";
-import { ApiError } from "@/lib/api/client";
-import { useAuth } from "@/providers/AuthProvider";
+import { toErrorMessage } from "@/lib/api/client";
+import { useLogin } from "../hooks/useLogin";
 import { CountryCodeSelect } from "./CountryCodeSelect";
 import {
   type LoginFormErrors,
@@ -17,39 +17,35 @@ import {
 const INITIAL_VALUES: LoginFormValues = { dialCode: "+1", phone: "", name: "" };
 
 export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
-  const { login } = useAuth();
+  const loginMutation = useLogin();
   const [values, setValues] = useState(INITIAL_VALUES);
   const [errors, setErrors] = useState<LoginFormErrors>({});
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
 
   const update = <Key extends keyof LoginFormValues>(key: Key, value: LoginFormValues[Key]) => {
     setValues((current) => ({ ...current, [key]: value }));
     setErrors((current) => ({ ...current, [key]: undefined }));
   };
 
-  const handleSubmit = async (event: FormEvent) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     const nextErrors = validateLoginForm(values);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
-    setSubmitting(true);
-    setSubmitError(null);
-    try {
-      await login({ phone: toE164(values), name: values.name.trim() });
-      onSuccess();
-    } catch (error) {
-      setSubmitError(
-        error instanceof ApiError ? error.message : "Something went wrong. Please try again.",
-      );
-      setSubmitting(false);
-    }
+    loginMutation.mutate(
+      { phone: toE164(values), name: values.name.trim() },
+      { onSuccess },
+    );
   };
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-      {submitError ? <ErrorState title="Could not sign you in" description={submitError} /> : null}
+      {loginMutation.isError ? (
+        <ErrorState
+          title="Could not sign you in"
+          description={toErrorMessage(loginMutation.error, "Something went wrong. Please try again.")}
+        />
+      ) : null}
 
       <TextField
         label="Phone number"
@@ -72,7 +68,7 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
         onChange={(event) => update("name", event.target.value)}
       />
 
-      <Button type="submit" size="lg" loading={submitting} className="mt-1 w-full">
+      <Button type="submit" size="lg" loading={loginMutation.isPending} className="mt-1 w-full">
         Continue
       </Button>
     </form>

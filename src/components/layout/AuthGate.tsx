@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { FullScreenLoader } from "@/components/shared/FullScreenLoader";
-import { useAuth } from "@/providers/AuthProvider";
+import { useIsHydrated } from "@/hooks/useIsHydrated";
+import { useSession } from "@/hooks/useSession";
 
 type AuthGateProps = {
   children: React.ReactNode;
@@ -12,13 +13,16 @@ type AuthGateProps = {
 };
 
 export function AuthGate({ children, requires, redirectTo }: AuthGateProps) {
-  const { status } = useAuth();
+  const { status } = useSession();
+  const hydrated = useIsHydrated();
   const router = useRouter();
-  const allowed = status === requires;
+
+  const allowed = hydrated && status === requires;
 
   useEffect(() => {
-    if (status !== "loading" && !allowed) router.replace(redirectTo);
-  }, [status, allowed, redirectTo, router]);
+    if (hydrated && status !== "loading" && status !== requires)
+      router.replace(redirectTo);
+  }, [hydrated, status, requires, redirectTo, router]);
 
   if (!allowed) return <FullScreenLoader />;
 
