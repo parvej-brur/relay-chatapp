@@ -7,10 +7,10 @@ history, and a phone-number login that doubles as registration.
 
 ### Live demo
 
-| | |
-| --- | --- |
-| Landing page | [frontend-task-chatapp-seven.vercel.app](https://frontend-task-chatapp-seven.vercel.app/) |
-| Chat app | [frontend-task-chatapp-seven.vercel.app/chat](https://frontend-task-chatapp-seven.vercel.app/chat) |
+| Host | Landing page | Chat app |
+| --- | --- | --- |
+| Netlify | [frontend-task-chatapp.netlify.app](https://frontend-task-chatapp.netlify.app/) | [/chat](https://frontend-task-chatapp.netlify.app/chat) |
+| Vercel | [frontend-task-chatapp-seven.vercel.app](https://frontend-task-chatapp-seven.vercel.app/) | [/chat](https://frontend-task-chatapp-seven.vercel.app/chat) |
 
 The chat app is behind login -- use any phone number to sign in, a new number registers
 itself automatically.
