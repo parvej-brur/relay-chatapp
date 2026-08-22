@@ -20,19 +20,22 @@ export function HeroSection() {
             Pulse makes messaging effortless, whether it&apos;s a quick 1:1 chat or a full team group
             conversation. Fast, secure, and beautifully simple.
           </p>
-          <div className="animate-fade-in-up mt-8 flex flex-col gap-3 [animation-delay:300ms] sm:flex-row">
-            <Link href="/chat" className={buttonClasses({ size: "lg" })}>
+          <div className="animate-fade-in-up mt-8 flex w-full flex-col gap-3 [animation-delay:300ms] sm:w-auto sm:flex-row">
+            <Link href="/chat" className={buttonClasses({ size: "lg", className: "w-full sm:w-auto" })}>
               Start Chatting Free
             </Link>
-            <a href="#preview" className={buttonClasses({ variant: "secondary", size: "lg" })}>
+            <a
+              href="#preview"
+              className={buttonClasses({ variant: "secondary", size: "lg", className: "w-full sm:w-auto" })}
+            >
               <FiPlay size={18} />
               Watch Demo
             </a>
           </div>
         </div>
 
-        <div id="preview" className="animate-fade-in-up flex flex-1 justify-center scroll-mt-20 [animation-delay:150ms] lg:justify-end">
-          <div className="animate-float">
+        <div id="preview" className="animate-fade-in-up flex w-full flex-1 justify-center scroll-mt-20 [animation-delay:150ms] lg:w-auto lg:justify-end">
+          <div className="animate-float w-full lg:w-auto">
             <ChatPreviewMock />
           </div>
         </div>
