@@ -40,7 +40,7 @@ export function LoginScreen() {
             <LoginForm onSuccess={() => router.replace("/chat")} />
           </div>
 
-          <p className="mt-6 text-center text-xs leading-relaxed text-subtle">
+          <p className="mt-3 text-center text-xs leading-relaxed text-subtle">
             By continuing, you agree to our Terms of Service
           </p>
         </div>

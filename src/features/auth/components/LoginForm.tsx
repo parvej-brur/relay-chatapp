@@ -14,7 +14,7 @@ import {
   validateLoginForm,
 } from "../utils/validateLoginForm";
 
-const INITIAL_VALUES: LoginFormValues = { dialCode: "+1", phone: "", name: "" };
+const INITIAL_VALUES: LoginFormValues = { dialCode: "+880", phone: "", name: "" };
 
 export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
   const loginMutation = useLogin();
