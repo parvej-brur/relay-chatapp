@@ -8,7 +8,7 @@ export function readConversations(queryClient: QueryClient): Conversation[] {
   return queryClient.getQueryData<Conversation[]>(chatKeys.conversations()) ?? [];
 }
 
-// A message that arrives while its conversation is open goes straight into the cache —
+// A message that arrives while its conversation is open goes straight into the cache;
 // the server never echoes it back, and refetching the page would be wasteful anyway.
 export function cacheMessage(queryClient: QueryClient, message: Message): void {
   queryClient.setQueryData<MessagesData>(chatKeys.messages(message.conversation), (current) => {

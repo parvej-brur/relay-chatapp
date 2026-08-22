@@ -6,7 +6,7 @@ import { chatKeys, fetchMessages } from "../api/chat.api";
 import type { Message, MessagePage } from "../types";
 import { toRequestStatus } from "../utils/requestStatus";
 
-// History arrives newest-first, page by page, and the `before` cursor is inclusive — so
+// History arrives newest-first, page by page, and the `before` cursor is inclusive, so
 // the anchor message repeats on every page. One pass walks the pages backwards into
 // display order, drops the repeats, and skips the blank messages the server accepts.
 function toDisplayOrder(data: InfiniteData<MessagePage, string | undefined>): Message[] {

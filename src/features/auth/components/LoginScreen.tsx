@@ -17,9 +17,9 @@ export function LoginScreen() {
           <br />
           anywhere.
         </h1>
-        <p className="mt-4 max-w-105 text-[17px] leading-relaxed text-white/75">
-          Real-time messaging for teams and friends. Start a direct chat or create a group — it&apos;s
-          fast, simple, and secure.
+        <p className="mt-4 max-w-105 text-base leading-relaxed text-white/70">
+          Stay connected with real-time messaging for teams and friends. Start
+          direct chats or create groups with ease.
         </p>
       </section>
 
@@ -31,7 +31,8 @@ export function LoginScreen() {
               Welcome to {SITE.name}
             </h1>
             <p className="mt-1.5 text-sm text-muted sm:text-[15px] lg:mb-9">
-              Enter your phone number and name to get started. No separate signup needed.
+              Enter your phone number and name to get started. No separate
+              signup needed.
             </p>
           </div>
 

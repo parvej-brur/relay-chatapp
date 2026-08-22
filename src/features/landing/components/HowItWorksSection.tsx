@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { ScrollReveal } from "./ScrollReveal";
 
 type Step = {
   title: string;
@@ -35,7 +36,9 @@ export function HowItWorksSection() {
           {STEPS.map((step, index) => (
             <Fragment key={step.title}>
               <div className="flex w-56 shrink-0 justify-center lg:w-64">
-                <StepCard step={step} number={index + 1} />
+                <ScrollReveal delay={index * 150}>
+                  <StepCard step={step} number={index + 1} />
+                </ScrollReveal>
               </div>
               {index < STEPS.length - 1 ? (
                 <div className="flex w-16 shrink-0 items-start justify-center pt-6 lg:w-20">
@@ -49,7 +52,9 @@ export function HowItWorksSection() {
         <div className="mt-10 flex flex-col items-center md:hidden">
           {STEPS.map((step, index) => (
             <Fragment key={step.title}>
-              <StepCard step={step} number={index + 1} />
+              <ScrollReveal delay={index * 150}>
+                <StepCard step={step} number={index + 1} />
+              </ScrollReveal>
               {index < STEPS.length - 1 ? (
                 <div className="my-1 flex justify-center">
                   <VerticalArrow />
@@ -81,25 +86,29 @@ function CurveArrow({ direction }: { direction: "down" | "up" }) {
   const head = direction === "down" ? "M138 26 l -3 9 M138 26 l -9 3" : "M138 40 l -9 -3 M138 40 l -3 -9";
 
   return (
-    <svg viewBox="0 0 144 66" fill="none" preserveAspectRatio="none" className="h-9 w-full text-brand lg:h-11" aria-hidden="true">
-      <path d={d} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="10 6" pathLength={100} />
-      <path d={head} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <ScrollReveal delay={250} className="h-9 w-full duration-1000! lg:h-11">
+      <svg viewBox="0 0 144 66" fill="none" preserveAspectRatio="none" className="h-9 w-full text-brand lg:h-11" aria-hidden="true">
+        <path d={d} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="10 6" pathLength={100} />
+        <path d={head} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </ScrollReveal>
   );
 }
 
 function VerticalArrow() {
   return (
-    <svg viewBox="0 0 48 72" fill="none" className="h-14 w-10 text-brand" aria-hidden="true">
-      <path
-        d="M24 4 C 6 22, 42 44, 24 68"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeDasharray="10 6"
-        pathLength={100}
-      />
-      <path d="M24 68 l -6 -6 M24 68 l 6 -6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <ScrollReveal delay={250} className="duration-1000!">
+      <svg viewBox="0 0 48 72" fill="none" className="h-14 w-10 text-brand" aria-hidden="true">
+        <path
+          d="M24 4 C 6 22, 42 44, 24 68"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeDasharray="10 6"
+          pathLength={100}
+        />
+        <path d="M24 68 l -6 -6 M24 68 l 6 -6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </ScrollReveal>
   );
 }

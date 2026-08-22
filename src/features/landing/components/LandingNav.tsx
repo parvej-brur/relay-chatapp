@@ -26,7 +26,11 @@ export function LandingNav() {
 
         <nav className="hidden items-center gap-8 md:flex">
           {NAV_LINKS.map((link) => (
-            <a key={link.href} href={link.href} className="text-sm font-medium text-muted hover:text-ink">
+            <a
+              key={link.href}
+              href={link.href}
+              className="text-sm font-medium text-muted transition-colors duration-200 hover:text-ink"
+            >
               {link.label}
             </a>
           ))}
@@ -44,13 +48,13 @@ export function LandingNav() {
       </div>
 
       {open ? (
-        <nav className="flex flex-col gap-1 border-t border-fill px-5 py-4 md:hidden">
+        <nav className="animate-fade-in-up flex flex-col gap-1 border-t border-fill px-5 py-4 md:hidden">
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="rounded-lg px-2 py-2.5 text-sm font-medium text-muted hover:bg-fill hover:text-ink"
+              className="rounded-lg px-2 py-2.5 text-sm font-medium text-muted transition-colors duration-200 hover:bg-fill hover:text-ink"
             >
               {link.label}
             </a>

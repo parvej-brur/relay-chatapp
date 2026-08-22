@@ -31,7 +31,8 @@ export function buttonClasses({
   className?: string;
 } = {}) {
   return cn(
-    "inline-flex items-center justify-center gap-2 font-semibold transition-colors",
+    "inline-flex items-center justify-center gap-2 font-semibold transition-[color,background-color,border-color,transform] duration-150",
+    "hover:scale-[1.02] active:scale-[0.97] disabled:hover:scale-100 disabled:active:scale-100",
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
     VARIANTS[variant],
     SIZES[size],

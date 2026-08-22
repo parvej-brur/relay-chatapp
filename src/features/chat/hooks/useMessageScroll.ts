@@ -12,7 +12,7 @@ type MessageScrollOptions = {
 };
 
 // Keeps the view glued to the newest message, but never yanks the reader back down
-// while they are reading history — new arrivals surface through `unseenCount` instead.
+// while they are reading history; new arrivals surface through `unseenCount` instead.
 export function useMessageScroll({
   messageCount,
   canLoadOlder,

@@ -1,5 +1,6 @@
 import type { IconType } from "react-icons";
 import { FiEdit2, FiLock, FiMessageSquare, FiSearch, FiSend, FiUsers } from "react-icons/fi";
+import { ScrollReveal } from "./ScrollReveal";
 
 type Feature = {
   icon: IconType;
@@ -57,14 +58,16 @@ export function FeaturesSection() {
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:mt-12 lg:grid-cols-3 lg:gap-6">
-          {FEATURES.map((feature) => (
-            <div key={feature.title} className="rounded-2xl border border-fill bg-surface p-6 sm:p-8">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-soft">
-                <feature.icon size={24} className="text-brand" />
+          {FEATURES.map((feature, index) => (
+            <ScrollReveal key={feature.title} delay={(index % 3) * 100}>
+              <div className="group rounded-2xl border border-fill bg-surface p-6 transition-all duration-300 hover:-translate-y-1 hover:border-brand/30 hover:shadow-lg sm:p-8">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-soft transition-transform duration-300 group-hover:scale-110">
+                  <feature.icon size={24} className="text-brand" />
+                </div>
+                <h3 className="mt-5 text-lg font-bold text-ink">{feature.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{feature.description}</p>
               </div>
-              <h3 className="mt-5 text-lg font-bold text-ink">{feature.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{feature.description}</p>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
