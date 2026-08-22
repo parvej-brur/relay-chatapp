@@ -1,78 +1,78 @@
 "use client";
 
-import { type Dispatch, type SetStateAction, useCallback, useState } from "react";
-import { ApiError } from "@/lib/api/client";
-import { useAuth } from "@/providers/AuthProvider";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toErrorMessage } from "@/lib/api/client";
+import { useSession } from "@/hooks/useSession";
+import { useAppDispatch } from "@/store/hooks";
+import { conversationOpened } from "@/store/chatSlice";
 import { addParticipants, promoteToAdmin, removeParticipant, renameGroup } from "../api/chat.api";
-import type { Conversation, GroupConversation } from "../types";
+import type { GroupConversation } from "../types";
+import { cacheConversationPatch, dropConversation } from "../utils/chatCache";
 
-type GroupActionKey = "rename" | "add" | "remove" | "promote" | "leave";
+export type GroupActionKey = "rename" | "add" | "remove" | "promote" | "leave";
 
-export function useGroupActions(
-  setConversations: Dispatch<SetStateAction<Conversation[]>>,
-  onLeftGroup: (conversationId: string) => void,
+type MutationState = { isPending: boolean; error: Error | null };
+
+// Every admin action answers with the updated group, so they all settle the same way:
+// merge the response into the cached conversation list.
+function useGroupMutation<Variables>(
+  mutationFn: (variables: Variables) => Promise<GroupConversation | null>,
 ) {
-  const { token, user } = useAuth();
-  const [pending, setPending] = useState<GroupActionKey | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const replaceGroup = useCallback(
-    (group: GroupConversation) => {
-      setConversations((current) =>
-        current.map((conversation) =>
-          conversation._id === group._id ? { ...conversation, ...group } : conversation,
-        ),
-      );
+  return useMutation({
+    mutationFn,
+    onSuccess: (group) => {
+      if (group) cacheConversationPatch(queryClient, group);
     },
-    [setConversations],
+  });
+}
+
+export function useGroupActions() {
+  const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
+  const { user } = useSession();
+
+  const rename = useGroupMutation(({ id, name }: { id: string; name: string }) =>
+    renameGroup(id, name),
+  );
+  const add = useGroupMutation(({ id, userIds }: { id: string; userIds: string[] }) =>
+    addParticipants(id, userIds),
+  );
+  const remove = useGroupMutation(({ id, userId }: { id: string; userId: string }) =>
+    removeParticipant(id, userId),
+  );
+  const promote = useGroupMutation(({ id, userId }: { id: string; userId: string }) =>
+    promoteToAdmin(id, userId),
   );
 
-  const run = useCallback(
-    async (key: GroupActionKey, action: () => Promise<GroupConversation | null>) => {
-      if (!token) return;
-      setPending(key);
-      setError(null);
-      try {
-        const group = await action();
-        if (group) replaceGroup(group);
-      } catch (caught) {
-        setError(caught instanceof ApiError ? caught.message : "That action could not be completed.");
-      } finally {
-        setPending(null);
-      }
+  const leave = useMutation({
+    mutationFn: (id: string) => removeParticipant(id, user?._id ?? ""),
+    onSuccess: (_result, id) => {
+      dropConversation(queryClient, id);
+      dispatch(conversationOpened(null));
     },
-    [token, replaceGroup],
-  );
+  });
+
+  // Only the shared surface is needed here, so the five differently-typed mutations can
+  // be read as one list to derive a single pending key and a single error message.
+  const running: Array<[GroupActionKey, MutationState]> = [
+    ["rename", rename],
+    ["add", add],
+    ["remove", remove],
+    ["promote", promote],
+    ["leave", leave],
+  ];
+
+  const failed = running.find(([, mutation]) => mutation.error)?.[1].error;
 
   return {
-    pending,
-    error,
-    clearError: useCallback(() => setError(null), []),
-    rename: useCallback(
-      (id: string, name: string) => run("rename", () => renameGroup(token!, id, name)),
-      [run, token],
-    ),
-    addMembers: useCallback(
-      (id: string, userIds: string[]) => run("add", () => addParticipants(token!, id, userIds)),
-      [run, token],
-    ),
-    removeMember: useCallback(
-      (id: string, userId: string) => run("remove", () => removeParticipant(token!, id, userId)),
-      [run, token],
-    ),
-    promote: useCallback(
-      (id: string, userId: string) => run("promote", () => promoteToAdmin(token!, id, userId)),
-      [run, token],
-    ),
-    leave: useCallback(
-      (id: string) =>
-        run("leave", async () => {
-          await removeParticipant(token!, id, user!._id);
-          setConversations((current) => current.filter((conversation) => conversation._id !== id));
-          onLeftGroup(id);
-          return null;
-        }),
-      [run, token, user, setConversations, onLeftGroup],
-    ),
+    pending: running.find(([, mutation]) => mutation.isPending)?.[0] ?? null,
+    error: failed ? toErrorMessage(failed, "That action could not be completed.") : null,
+    rename: (id: string, name: string) => rename.mutate({ id, name }),
+    addMembers: (id: string, userIds: string[]) => add.mutate({ id, userIds }),
+    removeMember: (id: string, userId: string) => remove.mutate({ id, userId }),
+    promote: (id: string, userId: string) => promote.mutate({ id, userId }),
+    leave: (id: string) => leave.mutate(id),
   };
 }

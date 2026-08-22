@@ -1,80 +1,52 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { ApiError } from "@/lib/api/client";
-import { fetchMessages } from "../api/chat.api";
-import type { Message, RequestStatus } from "../types";
+import { type InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
+import { toErrorMessage } from "@/lib/api/client";
+import { chatKeys, fetchMessages } from "../api/chat.api";
+import type { Message, MessagePage } from "../types";
+import { toRequestStatus } from "../utils/requestStatus";
 
-// The API returns newest-first and accepts blank text, so flip the order and drop
-// messages that would render as an empty bubble.
-function toDisplayOrder(messages: Message[]): Message[] {
-  return [...messages].reverse().filter((message) => message.text.trim().length > 0);
+// History arrives newest-first, page by page, and the `before` cursor is inclusive — so
+// the anchor message repeats on every page. One pass walks the pages backwards into
+// display order, drops the repeats, and skips the blank messages the server accepts.
+function toDisplayOrder(data: InfiniteData<MessagePage, string | undefined>): Message[] {
+  const seen = new Set<string>();
+  const ordered: Message[] = [];
+
+  for (let page = data.pages.length - 1; page >= 0; page -= 1) {
+    const { messages } = data.pages[page];
+    for (let index = messages.length - 1; index >= 0; index -= 1) {
+      const message = messages[index];
+      if (seen.has(message._id) || message.text.trim().length === 0) continue;
+      seen.add(message._id);
+      ordered.push(message);
+    }
+  }
+
+  return ordered;
 }
 
-export function useMessages(token: string | null, conversationId: string | null) {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [status, setStatus] = useState<RequestStatus>("idle");
-  const [error, setError] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(false);
-  const [loadingOlder, setLoadingOlder] = useState(false);
-  const [reloadCount, setReloadCount] = useState(0);
+export function useMessages(conversationId: string | null) {
+  const query = useInfiniteQuery({
+    queryKey: chatKeys.messages(conversationId ?? ""),
+    queryFn: ({ pageParam, signal }) =>
+      fetchMessages(conversationId as string, { before: pageParam, signal }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore && lastPage.messages.length > 0
+        ? lastPage.messages[lastPage.messages.length - 1]._id
+        : undefined,
+    enabled: Boolean(conversationId),
+    select: toDisplayOrder,
+  });
 
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const load = async () => {
-      if (!token || !conversationId) {
-        setMessages([]);
-        setStatus("idle");
-        return;
-      }
-
-      setStatus("loading");
-      setError(null);
-      try {
-        const page = await fetchMessages(token, conversationId, { signal: controller.signal });
-        setMessages(toDisplayOrder(page.messages));
-        setHasMore(Boolean(page.hasMore));
-        setStatus("success");
-      } catch (caught) {
-        if (controller.signal.aborted) return;
-        setError(caught instanceof ApiError ? caught.message : "Unable to load messages.");
-        setStatus("error");
-      }
-    };
-
-    void load();
-
-    return () => controller.abort();
-  }, [token, conversationId, reloadCount]);
-
-  const loadOlder = useCallback(async () => {
-    if (!token || !conversationId || loadingOlder || !hasMore || messages.length === 0) return;
-
-    setLoadingOlder(true);
-    try {
-      const page = await fetchMessages(token, conversationId, { before: messages[0]._id });
-      // The `before` cursor is inclusive, so the anchor message comes back on every page.
-      setMessages((current) => {
-        const known = new Set(current.map((message) => message._id));
-        const older = toDisplayOrder(page.messages).filter((message) => !known.has(message._id));
-        return [...older, ...current];
-      });
-      setHasMore(Boolean(page.hasMore));
-    } catch {
-      setHasMore(false);
-    } finally {
-      setLoadingOlder(false);
-    }
-  }, [token, conversationId, loadingOlder, hasMore, messages]);
-
-  const appendMessage = useCallback((message: Message) => {
-    setMessages((current) =>
-      current.some((existing) => existing._id === message._id) ? current : [...current, message],
-    );
-  }, []);
-
-  const reload = useCallback(() => setReloadCount((count) => count + 1), []);
-
-  return { messages, status, error, hasMore, loadingOlder, loadOlder, appendMessage, reload };
+  return {
+    messages: query.data ?? [],
+    status: toRequestStatus(query),
+    error: query.error ? toErrorMessage(query.error, "Unable to load messages.") : null,
+    hasMore: query.hasNextPage,
+    loadingOlder: query.isFetchingNextPage,
+    loadOlder: query.fetchNextPage,
+    reload: query.refetch,
+  };
 }
