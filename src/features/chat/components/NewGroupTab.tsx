@@ -7,7 +7,7 @@ import { SearchInput } from "@/components/ui/SearchInput";
 import { TextField } from "@/components/ui/TextField";
 import { ApiError } from "@/lib/api/client";
 import { cn } from "@/lib/utils/cn";
-import { useAuth } from "@/providers/AuthProvider";
+import { useSession } from "@/hooks/useSession";
 import type { User } from "@/types/user";
 import { useUserSearch } from "../hooks/useUserSearch";
 import { SelectedMemberChip } from "./SelectedMemberChip";
@@ -21,13 +21,13 @@ type NewGroupTabProps = {
 };
 
 export function NewGroupTab({ onCreate }: NewGroupTabProps) {
-  const { token, user } = useAuth();
+  const { user } = useSession();
   const [name, setName] = useState("");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<User[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const search = useUserSearch(token, query);
+  const search = useUserSearch(query);
 
   const results = search.results.filter((result) => result._id !== user?._id);
   const canCreate = name.trim().length > 0 && selected.length >= MIN_OTHER_MEMBERS;

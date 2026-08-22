@@ -6,7 +6,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { IconButton } from "@/components/ui/IconButton";
 import { Logo } from "@/components/ui/Logo";
 import { SearchInput } from "@/components/ui/SearchInput";
-import { useAuth } from "@/providers/AuthProvider";
+import { useSession } from "@/hooks/useSession";
 import type { Conversation, RequestStatus } from "../types";
 import { matchesConversationQuery } from "../utils/conversationDisplay";
 import { ConversationList } from "./ConversationList";
@@ -34,7 +34,7 @@ export function ConversationSidebar({
   onRetry,
   onStartConversation,
 }: ConversationSidebarProps) {
-  const { user, logout } = useAuth();
+  const { user, logout } = useSession();
   const [query, setQuery] = useState("");
   const visible = conversations.filter((conversation) => matchesConversationQuery(conversation, query));
 

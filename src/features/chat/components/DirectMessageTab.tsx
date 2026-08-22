@@ -4,7 +4,7 @@ import { useState } from "react";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Spinner } from "@/components/ui/Spinner";
 import { ApiError } from "@/lib/api/client";
-import { useAuth } from "@/providers/AuthProvider";
+import { useSession } from "@/hooks/useSession";
 import { useUserSearch } from "../hooks/useUserSearch";
 import { UserRow } from "./UserRow";
 import { UserSearchResults } from "./UserSearchResults";
@@ -14,11 +14,11 @@ type DirectMessageTabProps = {
 };
 
 export function DirectMessageTab({ onStart }: DirectMessageTabProps) {
-  const { token, user } = useAuth();
+  const { user } = useSession();
   const [query, setQuery] = useState("");
   const [pendingUserId, setPendingUserId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const search = useUserSearch(token, query);
+  const search = useUserSearch(query);
 
   const results = search.results.filter((result) => result._id !== user?._id);
 

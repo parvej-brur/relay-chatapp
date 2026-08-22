@@ -4,7 +4,6 @@ import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { IconButton } from "@/components/ui/IconButton";
 import { SearchInput } from "@/components/ui/SearchInput";
-import { useAuth } from "@/providers/AuthProvider";
 import { useUserSearch } from "../hooks/useUserSearch";
 import { UserRow } from "./UserRow";
 import { UserSearchResults } from "./UserSearchResults";
@@ -15,9 +14,8 @@ type AddMembersSectionProps = {
 };
 
 export function AddMembersSection({ existingMemberIds, onAdd }: AddMembersSectionProps) {
-  const { token } = useAuth();
   const [query, setQuery] = useState("");
-  const search = useUserSearch(token, query);
+  const search = useUserSearch(query);
 
   const results = search.results.filter((result) => !existingMemberIds.includes(result._id));
 

@@ -11,7 +11,7 @@ import { NewConversationModal } from "./NewConversationModal";
 export function ChatScreen() {
   const chat = useChat();
   const [newConversationOpen, setNewConversationOpen] = useState(false);
-  const groupActions = useGroupActions(chat.setConversations, () => chat.selectConversation(null));
+  const groupActions = useGroupActions();
 
   const hasActiveConversation = chat.activeConversation !== null;
 
