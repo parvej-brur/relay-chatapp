@@ -336,15 +336,34 @@ separately. A few things are deliberately left simple:
 
 ## About the developer
 
-Built by **Parvej Sikdar**.
-
-- Portfolio: [agriyo.netlify.app](https://agriyo.netlify.app)
-- GitHub: [@parvej-brur](https://github.com/parvej-brur)
-
-I designed the architecture and the system flows. I used Claude to generate boilerplate,
-scaffold feature folders, and move faster through repetitive work such as API integration,
-state wiring, and this documentation. I reviewed and controlled the implementation, handled
-the API edge cases, kept comments minimal, and managed Git history by hand.
+<table>
+  <tr>
+    <td width="200" align="center" valign="top">
+      <a href="https://github.com/parvej-brur"><img src="https://github.com/parvej-brur.png?size=240" width="140" alt="Parvej Sikdar"></a>
+      <br><br>
+      <a href="https://github.com/parvej-brur"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"></a>
+      <br>
+      <a href="https://www.linkedin.com/in/parvej-sikdar/"><img alt="LinkedIn" src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"></a>
+    </td>
+    <td valign="top">
+      <h3>Parvej Sikdar</h3>
+      <b>Software Engineer (Frontend)</b>
+      <p>
+        I build production React, Next.js and TypeScript products and cross-platform React Native
+        apps, with 4+ years of experience. As a sole frontend engineer, I owned architecture,
+        deployment and store releases. I am seeking a role with ownership of architecture and delivery.
+      </p>
+      <p>
+        <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-323330?style=flat-square&logo=javascript&logoColor=F7DF1E">
+        <img alt="React" src="https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB">
+        <img alt="Next.js" src="https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white">
+        <img alt="React_Native" src="https://img.shields.io/badge/React_Native-20232A?style=flat-square&logo=react&logoColor=61DAFB">
+        <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white">
+        <img alt="Python" src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white">
+      </p>
+    </td>
+  </tr>
+</table>
 
 <p align="right"><a href="#top">Back to top</a></p>
 
