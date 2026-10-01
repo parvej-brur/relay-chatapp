@@ -11,7 +11,7 @@ export function CtaSection() {
             Ready to start chatting?
           </h2>
           <p className="mx-auto mt-4 max-w-120 text-sm leading-relaxed text-white/75 sm:text-base lg:text-[17px]">
-            Join Pulse today and experience fast, simple, real time messaging, for free.
+            Join Relay today and experience fast, simple, real time messaging, for free.
           </p>
           <div className="mt-8 flex justify-center">
             <Link

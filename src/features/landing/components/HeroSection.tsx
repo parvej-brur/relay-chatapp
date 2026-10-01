@@ -17,7 +17,7 @@ export function HeroSection() {
             anywhere instantly.
           </h1>
           <p className="animate-fade-in-up mt-5 max-w-120 text-[15px] leading-relaxed text-muted [animation-delay:200ms] sm:text-base lg:text-[17px]">
-            Pulse makes messaging effortless, whether it&apos;s a quick 1:1 chat or a full team group
+            Relay makes messaging effortless, whether it&apos;s a quick 1:1 chat or a full team group
             conversation. Fast, secure, and beautifully simple.
           </p>
           <div className="animate-fade-in-up mt-8 flex w-full flex-col gap-3 [animation-delay:300ms] sm:w-auto sm:flex-row">
